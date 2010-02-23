@@ -42,6 +42,12 @@ module Gist
     if ENV['TM_SELECTED_TEXT']
       selection = ENV['TM_SELECTED_TEXT']
       gistname = "snippet" << "." << get_extension
+      # Attempt to create a unique filename.
+      load_files
+      if @@files.map{ |f| f['name'] }.include?(gistname)
+        num = @@files.select{ |f| f['name'] =~ /snippet([_0-9]*)\.#{get_extension}/ }.length
+        gistname = "snippet_#{num}" << "." << get_extension
+      end
     else
       selection = STDIN.read
       gistname = get_gist_name
